@@ -1,10 +1,7 @@
-// backend/src/db.js
-const { Pool } = require("pg");
-require("dotenv").config();
+import { Pool } from "pg";
+import "dotenv/config";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-  pool,
-};
+export const query = (text, params) => pool.query(text, params);
+export const rawPool = pool;

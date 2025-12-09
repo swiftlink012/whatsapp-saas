@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import ChatPanel from "./ChatPanel"; // <--- Import the new component
+
+const StatCard = ({ title, value, change, color }) => (
+  <div className="bg-[#13131f] border border-white/5 p-6 rounded-2xl">
+    <h3 className="text-gray-400 text-sm font-medium mb-1">{title}</h3>
+    <div className="flex items-end justify-between">
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>
+        {change}
+      </div>
+    </div>
+  </div>
+);
 
 export default function CustomerList() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // NEW: State to track which customer is clicked
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const fetchCustomers = () => {
     setLoading(true);
@@ -24,110 +40,106 @@ export default function CustomerList() {
   }, []);
 
   return (
-    <div className="mt-8">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Customers</h1>
-          <p className="text-gray-400">Manage and track your WhatsApp leads</p>
-        </div>
+    <div className="space-y-8 relative">
+      {/* RENDER CHAT PANEL IF A CUSTOMER IS SELECTED */}
+      {selectedCustomer && (
+        <>
+          {/* Dark Overlay/Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+            onClick={() => setSelectedCustomer(null)}
+          ></div>
+          {/* The Panel */}
+          <ChatPanel
+            customer={selectedCustomer}
+            onClose={() => setSelectedCustomer(null)}
+          />
+        </>
+      )}
 
+      {/* 1. Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400 mt-1">
+            Overview of your messaging performance
+          </p>
+        </div>
         <button
           onClick={fetchCustomers}
-          className="group relative inline-flex items-center justify-center px-6 py-2.5 overflow-hidden font-medium text-white transition duration-300 ease-out rounded-lg shadow-md group"
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
-          {/* Purple Gradient Button Background */}
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600 to-blue-600 opacity-100 group-hover:opacity-90 transition-opacity"></span>
-          <span className="relative flex items-center gap-2">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              ></path>
-            </svg>
-            Refresh Data
-          </span>
+          Refresh Data
         </button>
       </div>
 
-      {/* Dark Glass Card */}
-      <div className="bg-[#13131f] border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
-        {loading ? (
-          <div className="p-12 text-center text-gray-500">
-            <div
-              className="animate-spin inline-block w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mb-3"
-              role="status"
-            ></div>
-            <p>Syncing with database...</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02]">
-                  <th className="px-6 py-4 text-xs font-semibold text-purple-400 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold text-purple-400 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold text-purple-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold text-purple-400 uppercase tracking-wider">
-                    Joined
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {customers.map((c) => (
-                  <tr
-                    key={c.id}
-                    className="hover:bg-white/[0.02] transition-colors group"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-gray-200 font-mono">
-                        {c.phone}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-gray-300 font-medium">
-                        {c.name || (
-                          <span className="text-gray-600 italic">Unknown</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(74,222,128,0.1)]">
-                        Active
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-500 text-sm">
-                      {new Date(c.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
+      {/* 2. Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard
+          title="Total Customers"
+          value={customers.length}
+          change="+12% this week"
+          color="bg-purple-500/10 text-purple-400"
+        />
+        <StatCard
+          title="Messages Sent"
+          value="1,240"
+          change="+5% today"
+          color="bg-blue-500/10 text-blue-400"
+        />
+        <StatCard
+          title="Active Now"
+          value="3"
+          change="Live"
+          color="bg-green-500/10 text-green-400"
+        />
+      </div>
 
-                {customers.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan="4"
-                      className="px-6 py-12 text-center text-gray-500"
-                    >
-                      No customers found yet.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+      {/* 3. Table */}
+      <div className="bg-[#13131f] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div className="px-6 py-4 border-b border-white/5">
+          <h2 className="text-lg font-semibold text-white">Recent Customers</h2>
+        </div>
+
+        {loading ? (
+          <div className="p-12 text-center text-gray-500">Loading...</div>
+        ) : (
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-white/[0.02]">
+                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">
+                  Phone
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">
+                  Name
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {customers.map((c) => (
+                <tr
+                  key={c.id}
+                  className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                  onClick={() => setSelectedCustomer(c)} // <--- CLICK TO OPEN CHAT
+                >
+                  <td className="px-6 py-4 text-gray-300 font-mono">
+                    {c.phone}
+                  </td>
+                  <td className="px-6 py-4 text-gray-300">
+                    {c.name || "Unknown"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-xs font-medium text-purple-400 group-hover:text-purple-300 group-hover:underline">
+                      View Chat →
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
