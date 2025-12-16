@@ -28,6 +28,7 @@ export default function ChatPanel({ customer, onClose }) {
   }, [customer]);
 
   const fetchMessages = () => {
+    // API Call to get chat history
     axios
       .get(`http://localhost:4000/customers/${customer.id}/messages`)
       .then((res) => {
@@ -43,22 +44,23 @@ export default function ChatPanel({ customer, onClose }) {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!inputText.trim() || isSending) return; // <--- Stop if already sending
+    if (!inputText.trim() || isSending) return;
 
-    setIsSending(true); // <--- Lock the button
+    setIsSending(true);
     try {
+      // API Call to send message via Server -> WhatsApp
       await axios.post("http://localhost:4000/messages", {
         customerId: customer.id,
         text: inputText,
       });
 
-      setInputText("");
-      fetchMessages();
+      setInputText(""); // Clear input
+      fetchMessages(); // Refresh chat immediately
     } catch (err) {
       console.error("Failed to send", err);
-      alert("Failed to send message");
+      alert("Failed to send message. Check server logs.");
     } finally {
-      setIsSending(false); // <--- Unlock the button
+      setIsSending(false);
     }
   };
 
@@ -93,6 +95,7 @@ export default function ChatPanel({ customer, onClose }) {
           </div>
         ) : (
           messages.map((msg) => {
+            // Check direction: 'out' means YOU sent it, 'in' means Customer sent it
             const isOutbound = msg.direction === "out";
             return (
               <div
@@ -114,6 +117,7 @@ export default function ChatPanel({ customer, onClose }) {
                       isOutbound ? "text-purple-200" : "text-gray-500"
                     }`}
                   >
+                    {/* Format Time */}
                     {new Date(msg.created_at).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -126,7 +130,7 @@ export default function ChatPanel({ customer, onClose }) {
         )}
       </div>
 
-      {/* INPUT AREA */}
+      {/* INPUT AREA (This replaces your 'Read-only' text) */}
       <div className="p-4 bg-[#13131f] border-t border-white/10">
         <div className="flex gap-2">
           <input
@@ -134,13 +138,13 @@ export default function ChatPanel({ customer, onClose }) {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            disabled={isSending} // <--- Disable input while sending
+            disabled={isSending}
             placeholder={isSending ? "Sending..." : "Type a reply..."}
             className="flex-1 bg-[#0a0a0f] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500 disabled:opacity-50"
           />
           <button
             onClick={handleSend}
-            disabled={isSending} // <--- Disable button while sending
+            disabled={isSending}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white ${
               isSending
                 ? "bg-gray-600 cursor-not-allowed"

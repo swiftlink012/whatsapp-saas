@@ -6,8 +6,7 @@ async function sendTestMessage() {
   const token = process.env.WA_ACCESS_TOKEN;
   const phoneId = process.env.WA_PHONE_NUMBER_ID;
 
-  // ⚠️ REPLACE THIS with your personal WhatsApp number (e.g., "919999999999")
-  // Must be the same number you just whitelisted!
+
   const myNumber = "917331176808";
 
   const url = `https://graph.facebook.com/v17.0/${phoneId}/messages`;

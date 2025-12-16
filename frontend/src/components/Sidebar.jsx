@@ -1,86 +1,91 @@
 import React from "react";
+import {
+  LayoutDashboard,
+  Users,
+  Utensils, 
+  MessageSquare,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({ user, onLogout }) {
   const location = useLocation();
 
   const menuItems = [
-    {
-      name: "Dashboard",
-      path: "/",
-      icon: "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z",
-    },
-    {
-      name: "About Us",
-      path: "/about",
-      icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    },
-    {
-      name: "Contact",
-      path: "/contact",
-      icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-    },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: Users, label: "Customers", path: "/customers" },
+    { icon: Utensils, label: "Menu Management", path: "/menu" },
+    { icon: MessageSquare, label: "Contact", path: "/contact" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
-    <aside className="w-64 bg-[#0f0f16] border-r border-white/5 min-h-screen flex flex-col fixed left-0 top-0 z-40">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-[#0a0a0f] border-r border-gray-800 flex flex-col z-50">
       {/* Logo Area */}
-      <div className="h-16 flex items-center gap-3 px-6 border-b border-white/5">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-          <span className="font-bold text-white">W</span>
+      <div className="p-6 flex items-center gap-3 border-b border-gray-800">
+        <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold text-xl">W</span>
         </div>
-        <span className="font-bold text-xl text-white tracking-tight">
+        <span className="text-xl font-bold text-white tracking-tight">
           SaaS Admin
         </span>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
-              key={item.name}
+              key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isActive
-                  ? "bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-white border border-purple-500/20"
-                  : "text-gray-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-blue-600/10 text-blue-500"
+                  : "text-gray-400 hover:bg-[#13131f] hover:text-gray-100"
               }`}
             >
-              <svg
-                className={`w-5 h-5 ${
+              <item.icon
+                size={20}
+                className={`${
                   isActive
-                    ? "text-purple-400"
-                    : "text-gray-500 group-hover:text-purple-400"
+                    ? "text-blue-500"
+                    : "text-gray-500 group-hover:text-gray-100"
                 }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={item.icon}
-                />
-              </svg>
-              <span className="font-medium">{item.name}</span>
+              />
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* User Profile Snippet (Bottom) */}
-      <div className="p-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5">
-          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold text-white">
-            AD
+      {/* User Profile Area */}
+      <div className="p-4 border-t border-gray-800">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-[#13131f] border border-gray-800">
+          {/* Avatar */}
+          <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+            {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
           </div>
-          <div className="text-sm">
-            <div className="text-white font-medium">Admin</div>
-            <div className="text-xs text-gray-500">Admin</div>
+
+          {/* User Info */}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white truncate">
+              {user?.username || "Admin"}
+            </p>
+            <p className="text-xs text-gray-500 truncate">
+              {user?.mobilenumber || "Online"}
+            </p>
           </div>
+
+          {/* Logout Button */}
+          <button
+            onClick={onLogout}
+            title="Log Out"
+            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+          >
+            <LogOut size={18} />
+          </button>
         </div>
       </div>
     </aside>

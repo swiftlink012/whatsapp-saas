@@ -5,7 +5,7 @@ async function seed() {
   console.log("Seeding data...");
 
   // 1. Create (or find) a customer
-  const phone = "919900112233"; // Ramesh's number
+  const phone = "917331176808"; // Ramesh's number
   await db.query(
     `
     INSERT INTO customers (phone, name) 

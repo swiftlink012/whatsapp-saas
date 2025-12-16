@@ -65,6 +65,35 @@ export default function Contact() {
                 </div>
               </a>
 
+              {/* Email 3 */}
+
+              <a
+                href="mailto:yogeshreddy2379@gmail.com"
+                className="block group/link"
+              >
+                <p className="text-xs text-purple-400 font-bold uppercase tracking-wider mb-1">
+                  Sales & Inquiry
+                </p>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 group-hover/link:border-purple-500/30 group-hover/link:bg-purple-500/5 transition-all">
+                  <span className="text-gray-300 font-mono text-sm">
+                    yogeshreddy2379@gmail.com
+                  </span>
+                  <svg
+                    className="w-4 h-4 text-gray-500 group-hover/link:text-purple-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </div>
+              </a>
+
               {/* Email 2 */}
               <a
                 href="mailto:harshithsai301@gmail.com"
@@ -146,7 +175,29 @@ export default function Contact() {
                   </svg>
                 </div>
               </a>
-
+              <a href="tel:+917901380341" className="block group/link">
+                <p className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-1">
+                  Phone 2
+                </p>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 group-hover/link:border-blue-500/30 group-hover/link:bg-blue-500/5 transition-all">
+                  <span className="text-gray-300 font-mono text-sm">
+                    +91 790 138 0341
+                  </span>
+                  <svg
+                    className="w-4 h-4 text-gray-500 group-hover/link:text-blue-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </div>
+              </a>
               {/* Phone 2 */}
               <a href="tel:+917331176808" className="block group/link">
                 <p className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-1">
